@@ -9,8 +9,10 @@
 }
 
 table, td, th {
-  border: 1px ridge grey;
+  border: thin dotted black;
 }
+
+tr:nth-child(even) {background-color: #f2f2f2;}
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
