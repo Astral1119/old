@@ -11,7 +11,7 @@ This problem arose when [ztiaa](https://ztiaa.com/) challenged me to create a fo
 
 With Levenshtein, there are three accepted actions: removal, insertion, and substitution. Each can be weighted but most implementations use weights of 1.
 
-For example, the Levenshtein distance between the words chat and act is three.
+For example, the Levenshtein distance between the words "chat" and "act" is three.
 
 - Step 1: Substitute c with a - ahat
 - Step 2: Remove h - aat
@@ -189,7 +189,7 @@ Firstly, the `LET`. `LET` allows us to define some variables that recur througho
 
 Next, the `INDEX`. Remember how the bottom right corner gave us our final answer? `INDEX` grabs that for us.
 
-`REDUCE` is one of the most useful functions in Google Sheets. It takes the form `REDUCE(initial_value, array_or_range, LAMBDA)`. So for the initial value, we give it our initialized **previous** array we talked about before. In Google Sheets formulae, that looks something like `{0,sequence(1,len(target))}`. Next, to iterate through each letter in the source string, we just need to give it an sequence equal in size to the length of the source string. This translates quite nicely, to `sequence(len(source))`. This also provides our **current** variable. Finally, the `LAMBDA` just lets us tell it what to do.
+`REDUCE` is one of the most useful functions in Google Sheets. It takes the form `REDUCE(initial_value, array_or_range, LAMBDA)`. So for the initial value, we give it our initialized **previous** array we talked about before. In Google Sheets formulae, that looks something like `{0,sequence(1,len(target))}`. Next, to iterate through each letter in the source string, we just need to give it a sequence equal in size to the length of the source string. This translates quite nicely, to `sequence(len(source))`. This also provides our **current** variable. Finally, the `LAMBDA` just lets us tell it what to do.
 
 `SCAN` takes the same exact form as `REDUCE`. For its `initial_value`, we give it an error since there's nothing left to the first column. For its `array_or_range`, we give it a sequence the length of our target, or `sequence(1,len(target))`. The `LAMBDA` tells it how to go through the five steps.
 
