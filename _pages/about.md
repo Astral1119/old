@@ -8,16 +8,13 @@ comments: true
 <div class="row justify-content-between">
 <div class="col-md-8 pr-5">
 
-<p>Hey! I'm Astral, a 17 year old from the United States who really likes working with spreadsheets.</p>
+<p>Hey! I'm Astral, a 17 year old from the United States who really likes working with spreadsheets. I specialize in Google Sheets formulae and novel bug uses.</p>
 
-<p class="mb-5"><img class="shadow-lg" src="{{site.baseurl}}/assets/images/mediumish-jekyll-template.png" alt="jekyll template mediumish" /></p>
-<h4>Documentation</h4>
-
-<p>Please, read the docs <a href="https://bootstrapstarter.com/bootstrap-templates/template-mediumish-bootstrap-jekyll/">here</a>.</p>
+<p>I started using Google Sheets in April of 2022. I'd been helping design <a href="https://spellchess.io/">Spellchess</a>, and I'd wanted to compile community suggestions in a spreadsheet. One of the things I'd wanted to do was aggregate comments, something that was very difficult prior to the addition of <a href ="https://support.google.com/docs/answer/12508718">LAMBDA</a> in August 2022. After stumbling around for answers, I came across the <a href="https://discord.gg/M9GKpPd">Spreadsheets Discord Community</a>, where I am most active. In January of 2023, I was promoted to a moderator.</p>
+  
+<p>My interests over time have also evolved. From community assistance to bug hunting to LAMBDAless to algorithmic LAMBDAs, I've found that spreadsheets are powerful, versatile, and accessible. I hope you'll join me in my spreadsheeting journey!</p>
 
 <h4>Questions or bug reports?</h4>
-
-<p>Head over to our <a href="https://github.com/wowthemesnet/mediumish-theme-jekyll">Github repository</a>!</p>
 
 </div>
 
