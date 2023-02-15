@@ -1,7 +1,7 @@
 # Site
-name: "Mediumish"
-title: "Mediumish"
-description: "Jekyll template, Medium styled, free for bloggers."
+name: "The Astral Cafe"
+title: "The Astral Cafe"
+description: "Spreadsheet hell, but at least there's coffee."
 logo: 'assets/images/logo.png'
 favicon: 'assets/images/logo.png'
 baseurl: ''
@@ -13,14 +13,14 @@ permalink: /:title/
 
 # Authors
 authors:
-  sal:
-    name: Sal
-    display_name: Sal
-    gravatar: e56154546cf4be74e393c62d1ae9f9d4
-    email: wowthemesnet@gmail.com
-    web: https://www.wowthemes.net
-    twitter: https://twitter.com/wowthemesnet
-    description: "Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo."
+  astral:
+    name: Astral
+    display_name: Astral
+    gravatar: 10757c6fa29e04b39506c00f24af6471
+    email: rogueastral19@gmail.com
+    web: ''
+    twitter: ''
+    description: "Abuser of Google Sheets."
   john:
     name: John
     display_name: John    
