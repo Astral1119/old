@@ -8,9 +8,8 @@
 	display:inline;
 }
 
-table,td {
-  border: 1px dotted black;
-  spacing: 20 px;
+.tablelines table, .tablelines td, .tablelines th {
+    border: 1px dotted black; padding:20px;
 }
 
 tr:nth-child(even) {
