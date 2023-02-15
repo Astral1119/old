@@ -13,15 +13,15 @@ With Levenshtein, there are three accepted actions: removal, insertion, and subs
 
 For example, the Levenshtein distance between the words chat and act is three.
 
-Step 1: Substitute c with a - ahat
-Step 2: Remove h - aat
-Step 3: Substitute a with c - act
+- Step 1: Substitute c with a - ahat
+- Step 2: Remove h - aat
+- Step 3: Substitute a with c - act
 
 You can also get there through removals and insertions.
 
-Step 1: Remove c - hat
-Step 2: Remove h - at
-Step 3: Insert c - act
+- Step 1: Remove c - hat
+- Step 2: Remove h - at
+- Step 3: Insert c - act
 
 Pretty simple, right? But the issue arises with the algorithm. Here's the mathematical definition Wikipedia provides:
 
