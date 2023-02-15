@@ -8,6 +8,10 @@
 	display:inline;
 }
 
+table, td, th {
+  border: 3px solid grey;
+}
+
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
 	"syntax",
