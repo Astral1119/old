@@ -83,11 +83,11 @@ Now, we look at (1,2). If you recall the five steps I outlined above:
 | 3 | a |   |   |   |   |
 | 4 | t |   |   |   |   |
 
-1. The value to the left is 2. Add one to it to get **3**.
+1. The value to the left is 1. Add one to it to get **2**.
 2. The value directly above is 2. Add one to it to get **3**.
 3. The character in row 1, "c", matches the character in column 3, "c".
 4. So we take the value up and to the left, **1**.
-5. The minimum of 3, 3, and 1 is 1, so our new value is 1.
+5. The minimum of 2, 3, and 1 is 1, so our new value is 1.
 
 This process continues on for each letter in **source**.
 
