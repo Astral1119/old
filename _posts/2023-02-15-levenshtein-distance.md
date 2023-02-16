@@ -100,7 +100,7 @@ This process continues on for each letter in **source**.
 | 3 | a | 3 | 2 | 3 | 3 |
 | 4 | t | 4 | 3 | 3 | 3 |
 
-Finally, once we've gone all the way through, all we need to do is take the value in the bottom right corner. And that's it! We've just calculated the Levenshtein distance between the two characters!
+Finally, once we've gone all the way through, all we need to do is take the value in the bottom right corner. And that's it! We've just calculated the Levenshtein distance between the two strings!
 
 I also realized that you don't actually have to store all of the rows between iterations. Rather, you just need to hold onto the last row you calculated.
 
