@@ -1,12 +1,15 @@
 ---
-layout: post
 title:  "Levenshtein Distance Formula"
-author: astral
-categories: [ formula ]
-image: assets/images/distance.jpg
-featured: true
-hidden: true
+excerpt: "Recreating the Levenshtein Distance Algorithm in Google Sheets in response to ztiaa's challenge."
+header:
+  teaser: "assets/images/distance.jpg"
+tags:
+  - formula
+toc: true
 ---
+
+### Introduction
+
 This problem arose when [ztiaa](https://ztiaa.com/) challenged me to create a formula that calculates the Levenshtein distance between two strings. In simple terms, the Levenshtein distance is how many edits it would take to get from one string to another. It has a number of very nice applications in fuzzy matching, a topic on which I'll likely make additional posts on in the future.
 
 With Levenshtein, there are three accepted actions: removal, insertion, and substitution. Each can be weighted but most implementations use weights of 1.
@@ -23,7 +26,11 @@ You can also get there through removals and insertions.
 - Step 2: Remove h - at
 - Step 3: Insert c - act
 
-Pretty simple, right? But the issue arises with the algorithm. Here's the mathematical definition Wikipedia provides:
+Pretty simple, right? But the issue arises with the algorithm.
+
+### The Algorithm
+
+Here's the mathematical definition Wikipedia provides:
 
 ![ldist Mathematical Definition](https://wikimedia.org/api/rest_v1/media/math/render/svg/70962a722b0b682e398f0ee77d60c714a441c54e)
 
@@ -104,6 +111,8 @@ Finally, once we've gone all the way through, all we need to do is take the valu
 
 I also realized that you don't actually have to store all of the rows between iterations. Rather, you just need to hold onto the last row you calculated.
 
+### The Formula
+
 This is the formula I developed. For readability, I've beautified it and redefined the variables.
 
 ```haskell
@@ -182,6 +191,8 @@ This is the formula I developed. For readability, I've beautified it and redefin
 It looks a bit intimidating when it's all spaced out like this, in my opinion, so here it is compressed.
 
 `=let(source,"chat",target,"act",index(reduce({0,sequence(1,len(target))},sequence(len(source)),lambda(previous,current,scan(#N/A,sequence(1,len(target)+1),lambda(left,n,min(index(previous,n)+1,ifna(left+1),iferror(index(previous,n-1)+not(exact(mid(source,current,1),mid(target,n-1,1))))))))),len(target)+1))`
+
+### Explanation
 
 This formula just executes the five steps outlined above, using `SCAN` and `REDUCE` to iterate through it. Now that we've got the concepts out of the way, it's time to get our hands dirty.
 
