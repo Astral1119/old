@@ -1,0 +1,973 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Levenshtein Distance Formula - The Astral Café</title>
+<meta name="description" content="Recreating the Levenshtein Distance Algorithm in Google Sheets in response to ztiaa’s challenge.">
+
+
+  <meta name="author" content="Astral">
+  
+  <meta property="article:author" content="Astral">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="The Astral Café">
+<meta property="og:title" content="Levenshtein Distance Formula">
+<meta property="og:url" content="http://localhost:4000/levenshtein-distance/">
+
+
+  <meta property="og:description" content="Recreating the Levenshtein Distance Algorithm in Google Sheets in response to ztiaa’s challenge.">
+
+
+
+  <meta property="og:image" content="http://localhost:4000/assets/images/distance.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-02-15T00:00:00-05:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/levenshtein-distance/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Astral",
+      "url": "http://localhost:4000/",
+      "sameAs": ["https://www.reddit.com/user/RogueAstral","https://discordapp.com/users/365169403316142090/","mailto:astral@astral.cafe"]
+    
+  }
+</script>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THGPT5ZCL3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-THGPT5ZCL3');
+</script>
+
+
+
+
+
+
+
+  <meta name="yandex-verification" content="297a0ad313dcfc68">
+
+
+  <meta name="naver-site-verification" content="e4332bb24d39001cdf3926abd54a321ac437aeed">
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="The Astral Café Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/"><img src="/assets/images/logo.jpg" alt="The Astral Café"></a>
+        
+        <a class="site-title" href="/">
+          The Astral Café
+          
+        </a>
+        <ul class="visible-links"></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="Astral" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">Astral</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Abuser of Google Sheets.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Spreadsheet Hell</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.astral.cafe" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+            <li><a href="https://github.com/Astral1119" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:astral@astral.cafe" rel="me" class="u-email">
+            <meta itemprop="email" content="astral@astral.cafe" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Levenshtein Distance Formula">
+    <meta itemprop="description" content="Recreating the Levenshtein Distance Algorithm in Google Sheets in response to ztiaa’s challenge.">
+    <meta itemprop="datePublished" content="2023-02-15T00:00:00-05:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/levenshtein-distance/" class="u-url" itemprop="url">Levenshtein Distance Formula
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          7 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu"><li><a href="#introduction">Introduction</a></li><li><a href="#the-algorithm">The Algorithm</a></li><li><a href="#the-formula">The Formula</a></li><li><a href="#explanation">Explanation</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>This problem arose when <a href="https://ztiaa.com/">ztiaa</a> challenged me to create a formula that calculates the Levenshtein distance between two strings. In simple terms, the Levenshtein distance is how many edits it would take to get from one string to another. It has a number of very nice applications in fuzzy matching, a topic on which I’ll likely make additional posts on in the future.</p>
+
+<p>With Levenshtein, there are three accepted actions: removal, insertion, and substitution. Each can be weighted but most implementations use weights of 1.</p>
+
+<p>For example, the Levenshtein distance between the words “chat” and “act” is three.</p>
+
+<ul>
+  <li>Step 1: Substitute c with a - ahat</li>
+  <li>Step 2: Remove h - aat</li>
+  <li>Step 3: Substitute a with c - act</li>
+</ul>
+
+<p>You can also get there through removals and insertions.</p>
+
+<ul>
+  <li>Step 1: Remove c - hat</li>
+  <li>Step 2: Remove h - at</li>
+  <li>Step 3: Insert c - act</li>
+</ul>
+
+<p>Pretty simple, right? But the issue arises with the algorithm.</p>
+
+<h3 id="the-algorithm">The Algorithm</h3>
+
+<p>Here’s the mathematical definition Wikipedia provides:</p>
+
+<p><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/70962a722b0b682e398f0ee77d60c714a441c54e" alt="ldist Mathematical Definition" /></p>
+
+<p>Now, I’m a high schooler who was never formally taught any of this stuff. It also doesn’t help that very little of it is analogous to Google Sheets formulae. But I came across a very nice <a href="https://medium.com/@ethannam/understanding-the-levenshtein-distance-equation-for-beginners-c4285a5604f0">Medium article by Ethan Nam</a> that helped illustrate the concept. I highly recommend giving it a read.</p>
+
+<p>Anyways, I opted for a matrix implementation. However, we only really need to account for the last matrix row we calculated. Let’s call it <strong>previous</strong>. We also need to keep track of a <strong>source</strong> and <strong>target</strong> string, as well as the <strong>current</strong> index in the source string.
+As per the algorithm, we start by initializing <strong>previous</strong>. That sounds kind of fancy, but really it just means assigning a number to each letter in <strong>target</strong> and tacking a 0 to the beginning of that. So, if our target is “act”, the initialized <strong>previous</strong> row looks like this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>a</th>
+      <th>c</th>
+      <th>t</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>0</strong></td>
+      <td><strong>1</strong></td>
+      <td><strong>2</strong></td>
+      <td><strong>3</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Awesome. Now, we need to iterate it. An iteration can be described in a couple steps:</p>
+
+<ol>
+  <li>Take the value to the left and add one to it.</li>
+  <li>Take the value directly above and add one to it.</li>
+  <li>Check if the characters in the <strong>target</strong> and <strong>source</strong> strings corresponding to this spot match.</li>
+  <li>Take the value one up and one left. If they match, add nothing. If they don’t, add one to it.</li>
+  <li>Take the minimum value of the three values you just calculated. That’s the value for this spot.</li>
+</ol>
+
+<p>For example, take the first iteration. For convenience, I’ve also gone ahead and added numbers to refer to each spot with in the first row and column. I’ll refer to each spot as (row,column).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>a</td>
+      <td>c</td>
+      <td>t</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>c</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>h</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>a</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>t</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We start by taking our three values for (1,1). There’s only one valid value, 0, and we add one to it to get 1.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>a</td>
+      <td>c</td>
+      <td>t</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>c</td>
+      <td>1</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>h</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>a</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>t</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now, we look at (1,2). If you recall the five steps I outlined above:</p>
+
+<ol>
+  <li>The value to the left is 1. Add one to it to get <strong>2</strong>.</li>
+  <li>The value directly above is 1. Add one to it to get <strong>2</strong>.</li>
+  <li>The character in row 1, “c”, does not match the character in column 2, “a”.</li>
+  <li>The value up and to the left is 0. Since the characters don’t match, add one to it to get <strong>1</strong>.</li>
+  <li>The minimum of 2, 2, and 1 is 1, so our new value is 1.</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>a</td>
+      <td>c</td>
+      <td>t</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>c</td>
+      <td>1</td>
+      <td>1</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>h</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>a</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>t</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>The value to the left is 1. Add one to it to get <strong>2</strong>.</li>
+  <li>The value directly above is 2. Add one to it to get <strong>3</strong>.</li>
+  <li>The character in row 1, “c”, matches the character in column 3, “c”.</li>
+  <li>So we take the value up and to the left, <strong>1</strong>.</li>
+  <li>The minimum of 2, 3, and 1 is 1, so our new value is 1.</li>
+</ol>
+
+<p>This process continues on for each letter in <strong>source</strong>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>a</td>
+      <td>c</td>
+      <td>t</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>c</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>h</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>a</td>
+      <td>3</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>t</td>
+      <td>4</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Finally, once we’ve gone all the way through, all we need to do is take the value in the bottom right corner. And that’s it! We’ve just calculated the Levenshtein distance between the two strings!</p>
+
+<p>I also realized that you don’t actually have to store all of the rows between iterations. Rather, you just need to hold onto the last row you calculated.</p>
+
+<h3 id="the-formula">The Formula</h3>
+
+<p>This is the formula I developed. For readability, I’ve beautified it and redefined the variables.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=</span><span class="kr">let</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">,</span>
+    <span class="s">"chat"</span><span class="p">,</span>
+    <span class="n">target</span><span class="p">,</span>
+    <span class="s">"act"</span><span class="p">,</span>
+    <span class="n">index</span><span class="p">(</span>
+        <span class="n">reduce</span><span class="p">(</span>
+            <span class="p">{</span> <span class="mi">0</span> <span class="p">,</span>
+                <span class="n">sequence</span><span class="p">(</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">len</span><span class="p">(</span>
+                        <span class="n">target</span>
+                    <span class="p">)</span>
+                <span class="p">)</span> <span class="p">},</span>
+            <span class="n">sequence</span><span class="p">(</span>
+                <span class="n">len</span><span class="p">(</span>
+                    <span class="n">source</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">lambda</span><span class="p">(</span>
+                <span class="n">previous</span><span class="p">,</span>
+                <span class="n">current</span><span class="p">,</span>
+                <span class="n">scan</span><span class="p">(</span>
+                    <span class="o">#</span><span class="kt">N</span><span class="o">/</span><span class="kt">A</span><span class="p">,</span>
+                    <span class="n">sequence</span><span class="p">(</span>
+                        <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">len</span><span class="p">(</span>
+                            <span class="n">target</span>
+                        <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="p">),</span>
+                    <span class="n">lambda</span><span class="p">(</span>
+                        <span class="n">left</span><span class="p">,</span>
+                        <span class="n">n</span><span class="p">,</span>
+                        <span class="n">min</span><span class="p">(</span>
+                            <span class="n">index</span><span class="p">(</span>
+                                <span class="n">previous</span><span class="p">,</span>
+                                <span class="n">n</span>
+                            <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">ifna</span><span class="p">(</span>
+                                <span class="n">left</span> <span class="o">+</span> <span class="mi">1</span>
+                            <span class="p">),</span>
+                            <span class="n">iferror</span><span class="p">(</span>
+                                <span class="n">index</span><span class="p">(</span>
+                                    <span class="n">previous</span><span class="p">,</span>
+                                    <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+                                <span class="p">)</span> <span class="o">+</span>
+                                <span class="n">not</span><span class="p">(</span>
+                                    <span class="n">exact</span><span class="p">(</span>
+                                        <span class="n">mid</span><span class="p">(</span>
+                                            <span class="n">source</span><span class="p">,</span>
+                                            <span class="n">current</span><span class="p">,</span>
+                                            <span class="mi">1</span>
+                                        <span class="p">),</span>
+                                        <span class="n">mid</span><span class="p">(</span>
+                                            <span class="n">target</span><span class="p">,</span>
+                                            <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                            <span class="mi">1</span>
+                                        <span class="p">)</span>
+                                    <span class="p">)</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">len</span><span class="p">(</span>
+            <span class="n">target</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+<p>It looks a bit intimidating when it’s all spaced out like this, in my opinion, so here it is compressed.</p>
+
+<p><code class="language-plaintext highlighter-rouge">=let(source,"chat",target,"act",index(reduce({0,sequence(1,len(target))},sequence(len(source)),lambda(previous,current,scan(#N/A,sequence(1,len(target)+1),lambda(left,n,min(index(previous,n)+1,ifna(left+1),iferror(index(previous,n-1)+not(exact(mid(source,current,1),mid(target,n-1,1))))))))),len(target)+1))</code></p>
+
+<h3 id="explanation">Explanation</h3>
+
+<p>This formula just executes the five steps outlined above, using <code class="language-plaintext highlighter-rouge">SCAN</code> and <code class="language-plaintext highlighter-rouge">REDUCE</code> to iterate through it. Now that we’ve got the concepts out of the way, it’s time to get our hands dirty.</p>
+
+<p>Firstly, the <code class="language-plaintext highlighter-rouge">LET</code>. <code class="language-plaintext highlighter-rouge">LET</code> allows us to define some variables that recur throughout. In this case, we’re setting our <strong>source</strong> to “chat” and our <strong>target</strong> to “act”. It also helps us generalize, and just makes everything easier to understand.</p>
+
+<p>Next, the <code class="language-plaintext highlighter-rouge">INDEX</code>. Remember how the bottom right corner gave us our final answer? <code class="language-plaintext highlighter-rouge">INDEX</code> grabs that for us.</p>
+
+<p><code class="language-plaintext highlighter-rouge">REDUCE</code> is one of the most useful functions in Google Sheets. It takes the form <code class="language-plaintext highlighter-rouge">REDUCE(initial_value, array_or_range, LAMBDA)</code>. So for the initial value, we give it our initialized <strong>previous</strong> array we talked about before. In Google Sheets formulae, that looks something like <code class="language-plaintext highlighter-rouge">{0,sequence(1,len(target))}</code>. Next, to iterate through each letter in the source string, we just need to give it a sequence equal in size to the length of the source string. This translates quite nicely, to <code class="language-plaintext highlighter-rouge">sequence(len(source))</code>. This also provides our <strong>current</strong> variable. Finally, the <code class="language-plaintext highlighter-rouge">LAMBDA</code> just lets us tell it what to do.</p>
+
+<p><code class="language-plaintext highlighter-rouge">SCAN</code> takes the same exact form as <code class="language-plaintext highlighter-rouge">REDUCE</code>. For its <code class="language-plaintext highlighter-rouge">initial_value</code>, we give it an error since there’s nothing left to the first column. For its <code class="language-plaintext highlighter-rouge">array_or_range</code>, we give it a sequence the length of our target, or <code class="language-plaintext highlighter-rouge">sequence(1,len(target))</code>. The <code class="language-plaintext highlighter-rouge">LAMBDA</code> tells it how to go through the five steps.</p>
+
+<ol>
+  <li>Take the value to the left and add one to it.
+We do this with <code class="language-plaintext highlighter-rouge">left+1</code>. The <code class="language-plaintext highlighter-rouge">IFNA</code> gets rid of the error we gave it.</li>
+  <li>Take the value directly above and add one to it.
+The row above is just our <strong>previous</strong> variable, so we can do this with <code class="language-plaintext highlighter-rouge">index(previous,n)+1</code>.</li>
+  <li>Check if the characters in the <strong>target</strong> and <strong>source</strong> strings corresponding to this spot match.
+This can be done with <code class="language-plaintext highlighter-rouge">exact(mid(source,current,1),mid(target,n-1,1))</code>.</li>
+  <li>Take the value one up and one left. If they match, add nothing. If they don’t, add one to it.
+We take the value up and to the left with <code class="language-plaintext highlighter-rouge">index(previous,-1)</code> and just add it to the inverse of the Boolean above. Altogether, it looks like <code class="language-plaintext highlighter-rouge">iferror(index(previous,n-1)+not(exact(mid(source,current,1),mid(target,n-1,1))))</code>.</li>
+  <li>Take the minimum value of the three values you just calculated. That’s the value for this spot.
+Wrap all three values we calculated in <code class="language-plaintext highlighter-rouge">MIN</code> and we’ve got the current value!</li>
+</ol>
+
+<p>You can find see it in action <a href="https://docs.google.com/spreadsheets/d/1iry1jZ-EZJnJ-9lrQchWuDGeimvEs24BGIrCWTWJIvo/edit#gid=0">here</a>. I’ve also added ztiaa’s solution. Make sure to check out their <a href="https://ztiaa.com/">blog</a>!</p>
+
+<p>Fare thee well,</p>
+
+<p>- Astral</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#formula" class="page__taxonomy-item p-category" rel="tag">formula</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2023-02-15T00:00:00-05:00">February 15, 2023</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Levenshtein+Distance+Formula%20http%3A%2F%2Flocalhost%3A4000%2Flevenshtein-distance%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Flevenshtein-distance%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Flevenshtein-distance%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/crash-bug/" class="pagination--pager" title="The Crash Bug
+">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/assets/images/broken.jpg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/crash-bug/" rel="permalink">The Crash Bug
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Breaking Google Sheets with 17 characters.
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="mailto:astral@astral.cafe" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://www.astral.cafe" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-link" aria-hidden="true"></i> Website</a></li>
+        
+      
+        
+          <li><a href="https://github.com/Astral1119" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Astral. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

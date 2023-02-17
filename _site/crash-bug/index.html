@@ -1,0 +1,579 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>The Crash Bug - The Astral Café</title>
+<meta name="description" content="Breaking Google Sheets with 17 characters.">
+
+
+  <meta name="author" content="Astral">
+  
+  <meta property="article:author" content="Astral">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="The Astral Café">
+<meta property="og:title" content="The Crash Bug">
+<meta property="og:url" content="http://localhost:4000/crash-bug/">
+
+
+  <meta property="og:description" content="Breaking Google Sheets with 17 characters.">
+
+
+
+  <meta property="og:image" content="http://localhost:4000/assets/images/broken.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-02-14T00:00:00-05:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/crash-bug/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Astral",
+      "url": "http://localhost:4000/",
+      "sameAs": ["https://www.reddit.com/user/RogueAstral","https://discordapp.com/users/365169403316142090/","mailto:astral@astral.cafe"]
+    
+  }
+</script>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THGPT5ZCL3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-THGPT5ZCL3');
+</script>
+
+
+
+
+
+
+
+  <meta name="yandex-verification" content="297a0ad313dcfc68">
+
+
+  <meta name="naver-site-verification" content="e4332bb24d39001cdf3926abd54a321ac437aeed">
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="The Astral Café Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/"><img src="/assets/images/logo.jpg" alt="The Astral Café"></a>
+        
+        <a class="site-title" href="/">
+          The Astral Café
+          
+        </a>
+        <ul class="visible-links"></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="Astral" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">Astral</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Abuser of Google Sheets.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Spreadsheet Hell</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.astral.cafe" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+            <li><a href="https://github.com/Astral1119" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:astral@astral.cafe" rel="me" class="u-email">
+            <meta itemprop="email" content="astral@astral.cafe" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="The Crash Bug">
+    <meta itemprop="description" content="Breaking Google Sheets with 17 characters.">
+    <meta itemprop="datePublished" content="2023-02-14T00:00:00-05:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/crash-bug/" class="u-url" itemprop="url">The Crash Bug
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu"><li><a href="#introduction">Introduction</a></li><li><a href="#the-bug">The Bug</a></li><li><a href="#the-investigation">The Investigation</a></li><li><a href="#elly-helps-out">Elly Helps Out</a></li><li><a href="#extending-the-bug">Extending the Bug</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>Since this is my first post here, I figured I’d start strong.</p>
+
+<p>Not too long ago, I was designing an <a href="https://docs.google.com/spreadsheets/d/1RZVTUJj_qzugq_WCd7rMjmjzKtUM72Jb5x0RGFAVNnk/edit#gid=890374412">intermediate to advanced formula practice sheet</a> when I accidentally hit enter on one of the formulae intended to generate test data. (I’ll probably make some posts on the formula practice sheet later.) It immediately crashed the sheet, and would continuously spit out the following:</p>
+
+<p><img src="/assets/images/crashbug1.png" alt="Screenshot of Bug" /></p>
+
+<p>So clearly, something went pretty horribly wrong. It completely bricked the workbook, but for some reason it still let me access it through iOS sheets so I was able to salvage it.</p>
+
+<p>So what happened?</p>
+
+<h3 id="the-bug">The Bug</h3>
+
+<p>Well, the first part of the problem I needed to solve was reducing the formula that created the problem. Here’s what it looked like when it crashed the sheet:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=</span><span class="n">index</span><span class="p">(</span><span class="n">lambda</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">lambda</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">reduce</span><span class="p">(</span><span class="s">"!"</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">lambda</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">lambda</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="kr">if</span><span class="p">(</span><span class="n">and</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s">"!"</span><span class="p">),</span><span class="n">f</span><span class="p">,{</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="p">}))(</span><span class="n">flatten</span><span class="p">(</span><span class="n">filter</span><span class="p">(</span><span class="n">query</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="s">"where Col1 is not null offset 1"</span><span class="p">,),</span><span class="n">index</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="mi">1</span><span class="p">,)</span><span class="o">=</span><span class="n">c</span><span class="p">))))))(</span><span class="n">reduce</span><span class="p">(</span><span class="s">"!"</span><span class="p">,</span><span class="n">sequence</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">lambda</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">lambda</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="kr">if</span><span class="p">(</span><span class="n">and</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s">"!"</span><span class="p">),</span><span class="n">y</span><span class="p">,{</span><span class="n">a</span><span class="p">,</span><span class="n">y</span><span class="p">}))({</span><span class="n">text</span><span class="p">(</span><span class="n">date</span><span class="p">(,</span><span class="n">c</span><span class="p">,),</span><span class="s">"mmmm"</span><span class="p">),</span><span class="n">d</span><span class="p">;</span><span class="n">query</span><span class="p">(</span><span class="n">map</span><span class="p">(</span><span class="n">sequence</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">lambda</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,{</span><span class="s">"Item "</span><span class="o">&amp;</span><span class="n">randbetween</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">30</span><span class="p">),</span><span class="n">y</span><span class="p">,</span><span class="n">y</span><span class="o">*</span><span class="n">z</span><span class="p">,</span><span class="n">z</span><span class="p">})(</span><span class="n">randbetween</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span><span class="n">randbetween</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">)))),</span><span class="s">"select 2/0,Col1,Col2,Col3,Col4,1/0label 1/0'',2/0''"</span><span class="p">,)}))))({</span><span class="s">"SKU"</span><span class="p">,</span><span class="s">"Quantity"</span><span class="p">,</span><span class="s">"Total Price"</span><span class="p">,</span><span class="s">"Average Price"</span><span class="p">,</span><span class="s">""</span><span class="p">})))</span>
+</code></pre></div></div>
+
+<p>This is obviously not the most readable. It was also designed before <code class="language-plaintext highlighter-rouge">LET</code> and <code class="language-plaintext highlighter-rouge">HSTACK</code> came to Google Sheets, so everything is obscured behind nested <code class="language-plaintext highlighter-rouge">LAMBDA</code>s. But slowly, I started chipping away at it, and eventually I was left with the following:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=</span><span class="n">index</span><span class="p">(</span><span class="n">lambda</span><span class="p">(,))</span>
+</code></pre></div></div>
+
+<p>That’s it. That’s all you need to nuke a sheet.</p>
+
+<h3 id="the-investigation">The Investigation</h3>
+
+<p>I did a little more testing, and found that this only happened when <code class="language-plaintext highlighter-rouge">LAMBDA</code> had a variable expressed, and no argument passed to it; the variable name didn’t even need to be valid, but my guess is something about <code class="language-plaintext highlighter-rouge">LAMBDA</code> execution outputs an error that carries down if no arguments are expressed. For example,</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=</span><span class="n">index</span><span class="p">(</span><span class="n">lambda</span><span class="nb">()</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>outputs an error, but doesn’t cause a meltdown. Instead, it sends out a <code class="language-plaintext highlighter-rouge">#N/A</code> error due to having too few arguments. Hence, a comma is necessary for the bug to occur.</p>
+
+<p>The next thing I tried was wrapping it in <code class="language-plaintext highlighter-rouge">IFERROR</code> or literally any other function, and it persisted. Something about the interaction between <code class="language-plaintext highlighter-rouge">INDEX</code> and an argumentless <code class="language-plaintext highlighter-rouge">LAMBDA</code> causes a fatal error. Interestingly,</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=</span><span class="kr">if</span><span class="p">(,</span><span class="n">index</span><span class="p">(</span><span class="n">lambda</span><span class="p">(,)))</span>
+</code></pre></div></div>
+
+<p>does <em>not</em> cause an error. If is quite nice because it only evaluates the condition corresponding to the Boolean it is passed. What this effectively means is that the <code class="language-plaintext highlighter-rouge">=index(lambda(,))</code> needs to be parsed and evaluated to have an effect. Which makes sense.</p>
+
+<p>Further along in my testing, I was able to induce a state where I was able to edit a bugged sheet without being kicked out. I still have no idea how it happened or how to replicate it, but it was extremely handy to be able to have one tab where I was not continuously kicked out and another to see if whatever I was testing had any effects.</p>
+
+<h3 id="elly-helps-out">Elly Helps Out</h3>
+
+<p>It was at this point I shared what information I had with some of the lovely folks over on the <a href="https://discord.gg/M9GKpPd">Spreadsheets Discord Community</a>. One person in particular, <a href="https://www.reddit.com/user/Keipaws">Elly</a>, was instrumental in determining the cause of this issue. After playing around with it for a while, they sent me this:</p>
+
+<p><img src="/assets/images/crashbug2.png" alt="Screenshot of Console" /></p>
+
+<p>I couldn’t believe I hadn’t thought to look at the console! Lo and behold, we have the exact cause of the fatal error. It seems like searchArrayOrRef, a backend function used in INDEX, is not compatible with new data types that result from LAMBDA.</p>
+
+<h3 id="extending-the-bug">Extending the Bug</h3>
+
+<p>But to go one step further, I was a bit intrigued by the searchArrayOrRef function. Given its name, I guessed that it would be used in functions of the Lookup type. As it turns out, LOOKUP, MATCH, XLOOKUP, etc. are all susceptible to this error.</p>
+
+<p>Of course, with proper syntax, this is a non-issue. With how new LAMBDA is, and how game-changing it’s proven to be already, I think issues were to be expected. I’m not sure if there are any meaningful implications to this adventure, other than that finding a bug in one of a trillion-dollar company’s flagship products is pretty nifty. But if you’re curious, you can find out more <a href="https://docs.google.com/spreadsheets/d/1dH_diVwMm8XMVUP1bxFhForIc0my_X2_2oDLbJGUBPo/edit#gid=0">at this link</a>.</p>
+
+<p>‘Til later,</p>
+
+<p>- Astral</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#bugs" class="page__taxonomy-item p-category" rel="tag">bugs</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2023-02-14T00:00:00-05:00">February 14, 2023</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=The+Crash+Bug%20http%3A%2F%2Flocalhost%3A4000%2Fcrash-bug%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcrash-bug%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcrash-bug%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">Previous</a>
+    
+    
+      <a href="/levenshtein-distance/" class="pagination--pager" title="Levenshtein Distance Formula
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+      <div class="archive__item-teaser">
+        <img src="/assets/images/distance.jpg" alt="">
+      </div>
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/levenshtein-distance/" rel="permalink">Levenshtein Distance Formula
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          7 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Recreating the Levenshtein Distance Algorithm in Google Sheets in response to ztiaa’s challenge.
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="mailto:astral@astral.cafe" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://www.astral.cafe" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-link" aria-hidden="true"></i> Website</a></li>
+        
+      
+        
+          <li><a href="https://github.com/Astral1119" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Astral. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-02-17T16:54:53-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">The Astral Café</title><subtitle>A Google Sheets blog about spreadsheet formulae.</subtitle><author><name>Astral</name><email>astral@astral.cafe</email></author><entry><title type="html">Levenshtein Distance Formula</title><link href="http://localhost:4000/levenshtein-distance/" rel="alternate" type="text/html" title="Levenshtein Distance Formula" /><published>2023-02-15T00:00:00-05:00</published><updated>2023-02-15T00:00:00-05:00</updated><id>http://localhost:4000/levenshtein-distance</id><content type="html" xml:base="http://localhost:4000/levenshtein-distance/">&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;This problem arose when &lt;a href=&quot;https://ztiaa.com/&quot;&gt;ztiaa&lt;/a&gt; challenged me to create a formula that calculates the Levenshtein distance between two strings. In simple terms, the Levenshtein distance is how many edits it would take to get from one string to another. It has a number of very nice applications in fuzzy matching, a topic on which I’ll likely make additional posts on in the future.&lt;/p&gt;
+
+&lt;p&gt;With Levenshtein, there are three accepted actions: removal, insertion, and substitution. Each can be weighted but most implementations use weights of 1.&lt;/p&gt;
+
+&lt;p&gt;For example, the Levenshtein distance between the words “chat” and “act” is three.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Step 1: Substitute c with a - ahat&lt;/li&gt;
+  &lt;li&gt;Step 2: Remove h - aat&lt;/li&gt;
+  &lt;li&gt;Step 3: Substitute a with c - act&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can also get there through removals and insertions.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Step 1: Remove c - hat&lt;/li&gt;
+  &lt;li&gt;Step 2: Remove h - at&lt;/li&gt;
+  &lt;li&gt;Step 3: Insert c - act&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Pretty simple, right? But the issue arises with the algorithm.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-algorithm&quot;&gt;The Algorithm&lt;/h3&gt;
+
+&lt;p&gt;Here’s the mathematical definition Wikipedia provides:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://wikimedia.org/api/rest_v1/media/math/render/svg/70962a722b0b682e398f0ee77d60c714a441c54e&quot; alt=&quot;ldist Mathematical Definition&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, I’m a high schooler who was never formally taught any of this stuff. It also doesn’t help that very little of it is analogous to Google Sheets formulae. But I came across a very nice &lt;a href=&quot;https://medium.com/@ethannam/understanding-the-levenshtein-distance-equation-for-beginners-c4285a5604f0&quot;&gt;Medium article by Ethan Nam&lt;/a&gt; that helped illustrate the concept. I highly recommend giving it a read.&lt;/p&gt;
+
+&lt;p&gt;Anyways, I opted for a matrix implementation. However, we only really need to account for the last matrix row we calculated. Let’s call it &lt;strong&gt;previous&lt;/strong&gt;. We also need to keep track of a &lt;strong&gt;source&lt;/strong&gt; and &lt;strong&gt;target&lt;/strong&gt; string, as well as the &lt;strong&gt;current&lt;/strong&gt; index in the source string.
+As per the algorithm, we start by initializing &lt;strong&gt;previous&lt;/strong&gt;. That sounds kind of fancy, but really it just means assigning a number to each letter in &lt;strong&gt;target&lt;/strong&gt; and tacking a 0 to the beginning of that. So, if our target is “act”, the initialized &lt;strong&gt;previous&lt;/strong&gt; row looks like this:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;a&lt;/th&gt;
+      &lt;th&gt;c&lt;/th&gt;
+      &lt;th&gt;t&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;0&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;1&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;2&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Awesome. Now, we need to iterate it. An iteration can be described in a couple steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Take the value to the left and add one to it.&lt;/li&gt;
+  &lt;li&gt;Take the value directly above and add one to it.&lt;/li&gt;
+  &lt;li&gt;Check if the characters in the &lt;strong&gt;target&lt;/strong&gt; and &lt;strong&gt;source&lt;/strong&gt; strings corresponding to this spot match.&lt;/li&gt;
+  &lt;li&gt;Take the value one up and one left. If they match, add nothing. If they don’t, add one to it.&lt;/li&gt;
+  &lt;li&gt;Take the minimum value of the three values you just calculated. That’s the value for this spot.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;For example, take the first iteration. For convenience, I’ve also gone ahead and added numbers to refer to each spot with in the first row and column. I’ll refer to each spot as (row,column).&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;th&gt;4&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;h&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;We start by taking our three values for (1,1). There’s only one valid value, 0, and we add one to it to get 1.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;th&gt;4&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;h&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Now, we look at (1,2). If you recall the five steps I outlined above:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The value to the left is 1. Add one to it to get &lt;strong&gt;2&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;The value directly above is 1. Add one to it to get &lt;strong&gt;2&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;The character in row 1, “c”, does not match the character in column 2, “a”.&lt;/li&gt;
+  &lt;li&gt;The value up and to the left is 0. Since the characters don’t match, add one to it to get &lt;strong&gt;1&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;The minimum of 2, 2, and 1 is 1, so our new value is 1.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;th&gt;4&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;h&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The value to the left is 1. Add one to it to get &lt;strong&gt;2&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;The value directly above is 2. Add one to it to get &lt;strong&gt;3&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;The character in row 1, “c”, matches the character in column 3, “c”.&lt;/li&gt;
+  &lt;li&gt;So we take the value up and to the left, &lt;strong&gt;1&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;The minimum of 2, 3, and 1 is 1, so our new value is 1.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This process continues on for each letter in &lt;strong&gt;source&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;th&gt;4&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;c&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;h&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;a&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;t&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Finally, once we’ve gone all the way through, all we need to do is take the value in the bottom right corner. And that’s it! We’ve just calculated the Levenshtein distance between the two strings!&lt;/p&gt;
+
+&lt;p&gt;I also realized that you don’t actually have to store all of the rows between iterations. Rather, you just need to hold onto the last row you calculated.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-formula&quot;&gt;The Formula&lt;/h3&gt;
+
+&lt;p&gt;This is the formula I developed. For readability, I’ve beautified it and redefined the variables.&lt;/p&gt;
+
+&lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;chat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;act&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                    &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                    &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                        &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;
+                            &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;ifna&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;left&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                            &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;iferror&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                    &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                    &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;not&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                    &lt;span class=&quot;n&quot;&gt;exact&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                        &lt;span class=&quot;n&quot;&gt;mid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                            &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                            &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                            &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                                        &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                                        &lt;span class=&quot;n&quot;&gt;mid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                                            &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                            &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                            &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+                                        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                                    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                            &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;It looks a bit intimidating when it’s all spaced out like this, in my opinion, so here it is compressed.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;=let(source,&quot;chat&quot;,target,&quot;act&quot;,index(reduce({0,sequence(1,len(target))},sequence(len(source)),lambda(previous,current,scan(#N/A,sequence(1,len(target)+1),lambda(left,n,min(index(previous,n)+1,ifna(left+1),iferror(index(previous,n-1)+not(exact(mid(source,current,1),mid(target,n-1,1))))))))),len(target)+1))&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;explanation&quot;&gt;Explanation&lt;/h3&gt;
+
+&lt;p&gt;This formula just executes the five steps outlined above, using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SCAN&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REDUCE&lt;/code&gt; to iterate through it. Now that we’ve got the concepts out of the way, it’s time to get our hands dirty.&lt;/p&gt;
+
+&lt;p&gt;Firstly, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LET&lt;/code&gt;. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LET&lt;/code&gt; allows us to define some variables that recur throughout. In this case, we’re setting our &lt;strong&gt;source&lt;/strong&gt; to “chat” and our &lt;strong&gt;target&lt;/strong&gt; to “act”. It also helps us generalize, and just makes everything easier to understand.&lt;/p&gt;
+
+&lt;p&gt;Next, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDEX&lt;/code&gt;. Remember how the bottom right corner gave us our final answer? &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDEX&lt;/code&gt; grabs that for us.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REDUCE&lt;/code&gt; is one of the most useful functions in Google Sheets. It takes the form &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REDUCE(initial_value, array_or_range, LAMBDA)&lt;/code&gt;. So for the initial value, we give it our initialized &lt;strong&gt;previous&lt;/strong&gt; array we talked about before. In Google Sheets formulae, that looks something like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{0,sequence(1,len(target))}&lt;/code&gt;. Next, to iterate through each letter in the source string, we just need to give it a sequence equal in size to the length of the source string. This translates quite nicely, to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sequence(len(source))&lt;/code&gt;. This also provides our &lt;strong&gt;current&lt;/strong&gt; variable. Finally, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAMBDA&lt;/code&gt; just lets us tell it what to do.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SCAN&lt;/code&gt; takes the same exact form as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REDUCE&lt;/code&gt;. For its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initial_value&lt;/code&gt;, we give it an error since there’s nothing left to the first column. For its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;array_or_range&lt;/code&gt;, we give it a sequence the length of our target, or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sequence(1,len(target))&lt;/code&gt;. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAMBDA&lt;/code&gt; tells it how to go through the five steps.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Take the value to the left and add one to it.
+We do this with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;left+1&lt;/code&gt;. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IFNA&lt;/code&gt; gets rid of the error we gave it.&lt;/li&gt;
+  &lt;li&gt;Take the value directly above and add one to it.
+The row above is just our &lt;strong&gt;previous&lt;/strong&gt; variable, so we can do this with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index(previous,n)+1&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Check if the characters in the &lt;strong&gt;target&lt;/strong&gt; and &lt;strong&gt;source&lt;/strong&gt; strings corresponding to this spot match.
+This can be done with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exact(mid(source,current,1),mid(target,n-1,1))&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Take the value one up and one left. If they match, add nothing. If they don’t, add one to it.
+We take the value up and to the left with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index(previous,-1)&lt;/code&gt; and just add it to the inverse of the Boolean above. Altogether, it looks like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;iferror(index(previous,n-1)+not(exact(mid(source,current,1),mid(target,n-1,1))))&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Take the minimum value of the three values you just calculated. That’s the value for this spot.
+Wrap all three values we calculated in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MIN&lt;/code&gt; and we’ve got the current value!&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;You can find see it in action &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1iry1jZ-EZJnJ-9lrQchWuDGeimvEs24BGIrCWTWJIvo/edit#gid=0&quot;&gt;here&lt;/a&gt;. I’ve also added ztiaa’s solution. Make sure to check out their &lt;a href=&quot;https://ztiaa.com/&quot;&gt;blog&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;Fare thee well,&lt;/p&gt;
+
+&lt;p&gt;- Astral&lt;/p&gt;</content><author><name>Astral</name><email>astral@astral.cafe</email></author><category term="formula" /><summary type="html">Recreating the Levenshtein Distance Algorithm in Google Sheets in response to ztiaa's challenge.</summary></entry><entry><title type="html">The Crash Bug</title><link href="http://localhost:4000/crash-bug/" rel="alternate" type="text/html" title="The Crash Bug" /><published>2023-02-14T00:00:00-05:00</published><updated>2023-02-14T00:00:00-05:00</updated><id>http://localhost:4000/crash-bug</id><content type="html" xml:base="http://localhost:4000/crash-bug/">&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;Since this is my first post here, I figured I’d start strong.&lt;/p&gt;
+
+&lt;p&gt;Not too long ago, I was designing an &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1RZVTUJj_qzugq_WCd7rMjmjzKtUM72Jb5x0RGFAVNnk/edit#gid=890374412&quot;&gt;intermediate to advanced formula practice sheet&lt;/a&gt; when I accidentally hit enter on one of the formulae intended to generate test data. (I’ll probably make some posts on the formula practice sheet later.) It immediately crashed the sheet, and would continuously spit out the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/crashbug1.png&quot; alt=&quot;Screenshot of Bug&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So clearly, something went pretty horribly wrong. It completely bricked the workbook, but for some reason it still let me access it through iOS sheets so I was able to salvage it.&lt;/p&gt;
+
+&lt;p&gt;So what happened?&lt;/p&gt;
+
+&lt;h3 id=&quot;the-bug&quot;&gt;The Bug&lt;/h3&gt;
+
+&lt;p&gt;Well, the first part of the problem I needed to solve was reducing the formula that created the problem. Here’s what it looked like when it crashed the sheet:&lt;/p&gt;
+
+&lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;and&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}))(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flatten&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;where Col1 is not null offset 1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))))))(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;and&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}))({&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,),&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;mmmm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Item &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randbetween&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randbetween&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randbetween&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))),&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;select 2/0,Col1,Col2,Col3,Col4,1/0label 1/0'',2/0''&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,)}))))({&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SKU&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Quantity&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Total Price&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Average Price&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is obviously not the most readable. It was also designed before &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LET&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HSTACK&lt;/code&gt; came to Google Sheets, so everything is obscured behind nested &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAMBDA&lt;/code&gt;s. But slowly, I started chipping away at it, and eventually I was left with the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(,))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That’s it. That’s all you need to nuke a sheet.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-investigation&quot;&gt;The Investigation&lt;/h3&gt;
+
+&lt;p&gt;I did a little more testing, and found that this only happened when &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAMBDA&lt;/code&gt; had a variable expressed, and no argument passed to it; the variable name didn’t even need to be valid, but my guess is something about &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAMBDA&lt;/code&gt; execution outputs an error that carries down if no arguments are expressed. For example,&lt;/p&gt;
+
+&lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;outputs an error, but doesn’t cause a meltdown. Instead, it sends out a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#N/A&lt;/code&gt; error due to having too few arguments. Hence, a comma is necessary for the bug to occur.&lt;/p&gt;
+
+&lt;p&gt;The next thing I tried was wrapping it in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IFERROR&lt;/code&gt; or literally any other function, and it persisted. Something about the interaction between &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDEX&lt;/code&gt; and an argumentless &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAMBDA&lt;/code&gt; causes a fatal error. Interestingly,&lt;/p&gt;
+
+&lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lambda&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(,)))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;does &lt;em&gt;not&lt;/em&gt; cause an error. If is quite nice because it only evaluates the condition corresponding to the Boolean it is passed. What this effectively means is that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;=index(lambda(,))&lt;/code&gt; needs to be parsed and evaluated to have an effect. Which makes sense.&lt;/p&gt;
+
+&lt;p&gt;Further along in my testing, I was able to induce a state where I was able to edit a bugged sheet without being kicked out. I still have no idea how it happened or how to replicate it, but it was extremely handy to be able to have one tab where I was not continuously kicked out and another to see if whatever I was testing had any effects.&lt;/p&gt;
+
+&lt;h3 id=&quot;elly-helps-out&quot;&gt;Elly Helps Out&lt;/h3&gt;
+
+&lt;p&gt;It was at this point I shared what information I had with some of the lovely folks over on the &lt;a href=&quot;https://discord.gg/M9GKpPd&quot;&gt;Spreadsheets Discord Community&lt;/a&gt;. One person in particular, &lt;a href=&quot;https://www.reddit.com/user/Keipaws&quot;&gt;Elly&lt;/a&gt;, was instrumental in determining the cause of this issue. After playing around with it for a while, they sent me this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/crashbug2.png&quot; alt=&quot;Screenshot of Console&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I couldn’t believe I hadn’t thought to look at the console! Lo and behold, we have the exact cause of the fatal error. It seems like searchArrayOrRef, a backend function used in INDEX, is not compatible with new data types that result from LAMBDA.&lt;/p&gt;
+
+&lt;h3 id=&quot;extending-the-bug&quot;&gt;Extending the Bug&lt;/h3&gt;
+
+&lt;p&gt;But to go one step further, I was a bit intrigued by the searchArrayOrRef function. Given its name, I guessed that it would be used in functions of the Lookup type. As it turns out, LOOKUP, MATCH, XLOOKUP, etc. are all susceptible to this error.&lt;/p&gt;
+
+&lt;p&gt;Of course, with proper syntax, this is a non-issue. With how new LAMBDA is, and how game-changing it’s proven to be already, I think issues were to be expected. I’m not sure if there are any meaningful implications to this adventure, other than that finding a bug in one of a trillion-dollar company’s flagship products is pretty nifty. But if you’re curious, you can find out more &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1dH_diVwMm8XMVUP1bxFhForIc0my_X2_2oDLbJGUBPo/edit#gid=0&quot;&gt;at this link&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;‘Til later,&lt;/p&gt;
+
+&lt;p&gt;- Astral&lt;/p&gt;</content><author><name>Astral</name><email>astral@astral.cafe</email></author><category term="bugs" /><summary type="html">Breaking Google Sheets with 17 characters.</summary></entry></feed>
