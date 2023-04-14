@@ -2,7 +2,7 @@
 title:  "The LAMBDA Manifesto"
 excerpt: "The most powerful function in Google Sheets."
 header:
-  teaser: "assets/images/sword.jpg"
+  teaser: "assets/images/sword.JPG"
 tags:
   - lambda
   - formula
@@ -43,8 +43,10 @@ Let's start by taking it apart. Lambda calculus has three types of so-called lam
 
 `x`
 : A variable.
+
 `λx.M`
 : An abstraction. `M` itself must be a lambda term. Variable `x` becomes bound to the expression (i.e. its scope is limited to `M`).
+
 `M N`
 : An application. Both `M` and `N` must be lambda terms. It's easiest to think of this as applying function `M` to argument(s) `N`.
 
@@ -68,14 +70,19 @@ Here's a basic description of each LHF using lambda calculus. For the purposes o
 
 `MAP`
 : `∀A[i,j] ∈ array ↦ (λx.f)(A[i,j])`
+
 `REDUCE`
 : `(λg.g(g initial_value 1))(λgan.if n > |array| then a else (g g (λxy.f)(a array[n]) n+1))`
+
 `SCAN`
 : `∀A[i,j] ∈ array ↦ (λg.g(g initial_value 1))(λgan.if n > i+j*i then a else (g g (λxy.f)(a array[n]) n+1))`
+
 `MAKEARRAY`
 : `∀A[i,j] ∈ A ∈ M(m,n) ↦ (λx.f)(A[i,j])`
+
 `BYCOL`
 : `∀A[*,j] ∈ array ↦ (λx.f)(A[*,j])`
+
 `BYROW`
 : `∀A[i,*] ∈ array ↦ (λx.f)(A[i,*])`
 
