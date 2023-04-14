@@ -2,7 +2,7 @@
 title:  "The LAMBDA Manifesto"
 excerpt: "The most powerful function in Google Sheets."
 header:
-  teaser: "assets/images/broken.jpg"
+  teaser: "assets/images/sword.jpg"
 tags:
   - lambda
   - formula
